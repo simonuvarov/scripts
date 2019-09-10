@@ -1,0 +1,25 @@
+#!/bin/sh
+
+todate=$(date +"%Y-%m-%d")
+foldername=recon-$todate
+mkdir $foldername
+
+AMASS="./$foldername/amass.txt"
+touch $AMASS
+
+# Create a new tmp file
+MASSDNS="./$foldername/massdns.txt"
+touch $MASSDNS
+
+# Resolve domain names using massdns and save results in the tmp file
+massdns -r /share/wordlists/resolvers-valid.txt -t A -o S -w $MASSDNS $1
+
+RESOLVED="./$foldername/resolved.txt"
+touch $RESOLVED
+# Get list of IP addresses
+ADDRS=`cat $MASSDNS | grep ' A ' | awk '{print $3}' | sort -u`
+for ADDR in $ADDRS; do
+    # How many domains names for this IP?
+    COUNT=`cat $MASSDNS | grep $ADDR | awk '{print $1}' | wc -l`
+    echo $ADDR `cat $MASSDNS | grep $ADDR | awk '{print $1}' | sed 's/.$//' | paste -d ',' -s -` | tee -a $RESOLVED;
+done;
