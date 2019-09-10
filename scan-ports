@@ -16,7 +16,7 @@ touch $LIVEHOSTS
 HTTPSERVICES="./$foldername/http.txt"
 touch $HTTPSERVICES
 
-masscan -p53 -iL $1 -oX $MASSCAN --rate $RATE
+masscan -p1-65535 -iL $1 -oX $MASSCAN --rate $RATE
 
 PORTS=$(grep -oE "portid=\"[0-9]{1,5}\"" $MASSCAN | grep -oE "[0-9]{1,5}" | sort -u | paste -s -d ",")
 
