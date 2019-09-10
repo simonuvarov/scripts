@@ -1,0 +1,36 @@
+#!/bin/sh
+seclists="/share/wordlists/SecLists/Discovery/Web-Content/"
+alias dirbc="gobuster dir -q -k -t 50 -e -w /share/wordlists/content/common.txt -u"
+alias dirba="gobuster dir -q -k -t 50 -e -w /share/wordlists/content/all_content_discovery.txt -u"
+alias dirbf="gobuster dir -q -k -t 50 -e -w /share/wordlists/content/fuzz.txt -u"
+
+
+todate=$(date +"%Y-%m-%d")
+foldername=recon-$todate
+mkdir $foldername
+# Create a new tmp file
+FILES="./$foldername/files.txt"
+touch $FILES
+
+WAYBACKFILES="./$foldername/waybackurls.txt"
+touch $WAYBACKFILES
+
+# Let's go through / over all hosts
+MEGPATH="./$foldername/meg/"
+mkdir $MEGPATH
+meg -c 100 / $1 $MEGPATH
+
+cat $1 | waybackurls | tee -a $WAYBACKFILES
+
+for LINE in $(cat $1 | shuf); do
+        echo $LINE
+        gobuster dir -q -k -t 50 -e -w $seclists/common.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/oracle.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/sap.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/nginx.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/jboss.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/apache.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/OracleAppServer.fuzz.txt -u $LINE | tee -a $FILES
+        gobuster dir -q -k -t 50 -e -w $seclists/ApacheTomcat.fuzz.txt -u $LINE | tee -a $FILES
+done;
+
