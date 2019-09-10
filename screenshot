@@ -1,0 +1,10 @@
+#!/bin/sh
+
+todate=$(date +"%Y-%m-%d")
+foldername=recon-$todate
+mkdir $foldername
+# Create a new tmp file
+SCREENSHOTS="./$foldername/screenshots/"
+mkdir $SCREENSHOTS
+
+gowitness file -d  $SCREENSHOTS
