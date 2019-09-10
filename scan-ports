@@ -1,0 +1,29 @@
+#!/bin/sh
+
+todate=$(date +"%Y-%m-%d")
+path=$(pwd)
+RATE=12000
+foldername=recon-$todate
+mkdir ./$foldername
+MASSCAN="./$foldername/masscan.xml"
+touch $MASSCAN
+NMAPXML="./$foldername/nmap.xml"
+touch $NMAPXML
+NMAPTXT="./$foldername/nmap.txt"
+touch $NMAPTXT
+LIVEHOSTS="./$foldername/livehosts.txt"
+touch $LIVEHOSTS
+HTTPSERVICES="./$foldername/http.txt"
+touch $HTTPSERVICES
+
+masscan -p53 -iL $1 -oX $MASSCAN --rate $RATE
+
+PORTS=$(grep -oE "portid=\"[0-9]{1,5}\"" $MASSCAN | grep -oE "[0-9]{1,5}" | sort -u | paste -s -d ",")
+
+echo $PORTS
+
+grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" $MASSCAN | tee -a $LIVEHOSTS
+
+nmap -iL $LIVEHOSTS -p $PORTS -Pn -n -oX $NMAPXML -oN $NMAPTXT
+
+cat $NMAPXML | httpull | te
