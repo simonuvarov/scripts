@@ -26,4 +26,4 @@ grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" $MASSCAN | tee -a $LIVEHOSTS
 
 nmap -iL $LIVEHOSTS -p $PORTS -Pn -n -oX $NMAPXML -oN $NMAPTXT
 
-cat $NMAPXML | httpull | te
+cat $NMAPXML | httpull > $HTTPSERVICES 
