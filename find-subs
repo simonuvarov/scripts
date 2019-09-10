@@ -1,0 +1,10 @@
+#!/bin/sh
+
+todate=$(date +"%Y-%m-%d")
+foldername=recon-$todate
+mkdir $foldername
+
+AMASS="./$foldername/amass.txt"
+touch $AMASS
+
+amass enum -config /etc/amass/config.ini -df $1 -o $AMASS
