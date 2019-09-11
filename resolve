@@ -17,8 +17,8 @@ massdns -r /share/wordlists/resolvers-valid.txt -t A -o S -w $MASSDNS $1
 RESOLVED="./$foldername/resolved.txt"
 touch $RESOLVED
 # Get list of IP addresses
-cat $MASSDNS | grep ' A ' | awk '{print $3}' | sort -u > tee $foldername/ips.txt
-cat $MASSDNS | awk '{print $1}' | sort -u | sed 's/.$//' > tee $foldername/domains.txt
+cat $MASSDNS | grep ' A ' | awk '{print $3}' | sort -u > $foldername/ips.txt
+cat $MASSDNS | awk '{print $1}' | sort -u | sed 's/.$//' > $foldername/domains.txt
 #for ADDR in $ADDRS; do
 #    # How many domains names for this IP?
 #    COUNT=`cat $MASSDNS | grep $ADDR | awk '{print $1}' | wc -l`
