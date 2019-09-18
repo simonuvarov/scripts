@@ -24,6 +24,6 @@ echo $PORTS
 
 grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" $MASSCAN | tee -a $LIVEHOSTS
 
-nmap -iL $LIVEHOSTS -p $PORTS -Pn -n -oX $NMAPXML -oN $NMAPTXT
+nmap -iL $LIVEHOSTS -p $PORTS -Pn -n -oX $NMAPXML -oN $NMAPTXT -sV -T4
 
 cat $NMAPXML | httpull > $HTTPSERVICES 
